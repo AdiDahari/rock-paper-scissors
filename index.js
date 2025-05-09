@@ -1,6 +1,9 @@
-let humanScore = 0;
-let computerScore = 0;
 const options = ["rock", "paper", "scissors"];
+
+const rockBtn = document.getElementById("rock");
+const paperBtn = document.getElementById("paper");
+const scissorsBtn = document.getElementById("scissors");
+const scoreDiv = document.getElementById("score");
 
 function getComputerChoice() {
   return options[Math.floor(Math.random() * 3)];
@@ -22,67 +25,94 @@ function getHumanChoice() {
   }
 }
 
-function playRound(humanChoice, computerChoice) {
-  if (humanChoice == computerChoice) {
-    console.log(humanChoice + " Tie!");
+function playRound(humanChoice, computerChoice, humanScore, computerScore) {
+  let res = [0, 0];
 
-    return;
+  if (
+    humanChoice == computerChoice ||
+    humanScore === 5 ||
+    computerScore === 5
+  ) {
+    return [humanScore, computerScore];
   }
   switch (computerChoice) {
     case "rock":
       if (humanChoice == "scissors") {
-        console.log("Rock beats Scissors! Computer win round");
-
-        computerScore++;
+        res = [humanScore, computerScore + 1];
       } else {
-        console.log("Paper beats Rock! Human win round");
-        humanScore++;
+        res = [humanScore + 1, computerScore];
       }
       break;
 
     case "paper":
       if (humanChoice == "rock") {
-        console.log("Paper beats Rock! Computer win round");
-        computerScore++;
+        res = [humanScore, computerScore + 1];
       } else {
-        console.log("Scissors beats Paper! Human win round");
-        humanScore++;
+        res = [humanScore + 1, computerScore];
       }
       break;
 
     default:
       if (humanChoice == "paper") {
-        console.log("Scissors beats Paper! Computer win round");
-        computerScore++;
+        res = [humanScore, computerScore + 1];
       } else {
-        console.log("Rock beats Scissors! Human win round");
-        humanScore++;
+        res = [humanScore + 1, computerScore];
       }
   }
+
+  if (res[0] === 5 || res[0] === 5) {
+    const finalScore = document.createElement("h1");
+    if (res[0] === 5) finalScore.textContent = "Human wins!";
+    else finalScore.textContent = "Computer wins!";
+    scoreDiv.appendChild(finalScore);
+  }
+  return res;
 }
 
 function playGame() {
-  for (i = 0; i < 5; i++) {
+  const humanScore = document.getElementById("human_score");
+  const computerScore = document.getElementById("computer_score");
+  let humanScoreValue = 0;
+  let computerScoreValue = 0;
+  let humanChoice;
+  rockBtn.addEventListener("click", () => {
+    humanChoice = "rock";
     computerChoice = getComputerChoice();
-    humanChoice = getHumanChoice();
-    console.log("Round #" + (i + 1));
-    playRound(humanChoice, computerChoice);
+    [humanScoreValue, computerScoreValue] = playRound(
+      humanChoice,
+      computerChoice,
+      humanScoreValue,
+      computerScoreValue
+    );
 
-    console.log("Human:", humanScore, ", Computer:", computerScore);
-    console.log();
-  }
+    humanScore.innerText = humanScoreValue;
+    computerScore.innerText = computerScoreValue;
+  });
+  paperBtn.addEventListener("click", () => {
+    humanChoice = "paper";
+    computerChoice = getComputerChoice();
+    [humanScoreValue, computerScoreValue] = playRound(
+      humanChoice,
+      computerChoice,
+      humanScoreValue,
+      computerScoreValue
+    );
 
-  console.log();
-  console.log("Final Score");
-  console.log();
-  if (humanScore > computerScore) {
-    console.log("Human win the game!");
-  } else if (computerScore > humanScore) {
-    console.log("Computer win the game!");
-  } else {
-    console.log("It's a Tie!");
-  }
-  console.log("Human:", humanScore, ", Computer:", computerScore);
+    humanScore.innerText = humanScoreValue;
+    computerScore.innerText = computerScoreValue;
+  });
+  scissorsBtn.addEventListener("click", () => {
+    humanChoice = "scissors";
+    computerChoice = getComputerChoice();
+    [humanScoreValue, computerScoreValue] = playRound(
+      humanChoice,
+      computerChoice,
+      humanScoreValue,
+      computerScoreValue
+    );
+
+    humanScore.innerText = humanScoreValue.toString();
+    computerScore.innerText = computerScoreValue.toString();
+  });
 }
-
 playGame();
